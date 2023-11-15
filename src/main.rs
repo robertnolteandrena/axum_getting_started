@@ -47,7 +47,7 @@ mod tests {
         body::Body,
         http::{Request, StatusCode},
     };
-    use tower::ServiceExt; 
+    use tower::ServiceExt;
 
     #[tokio::test]
     async fn hello_world() {
@@ -63,4 +63,17 @@ mod tests {
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
         assert_eq!(&body[..], b"Hello, World!");
     }
+
+    #[tokio::test]
+    async fn timeout() {
+        let app = construct_app();
+
+        let response = app
+            .oneshot(Request::builder().uri("/10_seconds_timer").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
 }
