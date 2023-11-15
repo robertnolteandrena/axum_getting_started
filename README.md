@@ -37,10 +37,4 @@ oder besser noch: ausfueren nach jeder Aenderung:
 cargo install cargo-watch
 cargo watch -q -c -x  "test -- --show-output"
 ```
-* item1
-  * subitem1
-  ```rust
-  let x=1;
-  ```
-  * subitem2
-* item2
+
