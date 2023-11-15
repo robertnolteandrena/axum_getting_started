@@ -1,9 +1,7 @@
-use axum::{routing::get, Router};
-
+use hands_on_lib::construct_app;
 
 #[tokio::main]
 async fn main() {
-
     let app = construct_app();
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
@@ -11,15 +9,7 @@ async fn main() {
         .unwrap();
 }
 
-fn construct_app() -> Router {
-    Router::new().route(
-        "/",
-        get(|| async {
-            "Hello, World!"
-        }),
-    )
-}
-
+//Unit test
 #[cfg(test)]
 mod tests {
     use crate::construct_app;
@@ -27,7 +17,7 @@ mod tests {
         body::Body,
         http::{Request, StatusCode},
     };
-    use tower::ServiceExt; 
+    use tower::ServiceExt;
 
     #[tokio::test]
     async fn hello_world() {
