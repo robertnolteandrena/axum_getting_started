@@ -1,4 +1,5 @@
 use axum::{routing::get, Router};
+use std::time::Duration;
 
 
 #[tokio::main]
@@ -12,12 +13,15 @@ async fn main() {
 }
 
 fn construct_app() -> Router {
-    Router::new().route(
-        "/",
-        get(|| async {
-            "Hello, World!"
-        }),
-    )
+    Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+        .route(
+            "/10_seconds_timer",
+            get(|| async {
+                tokio::time::sleep(Duration::from_secs(10)).await;
+                "10 seconds have passed: you may continue with other task now"
+            }),
+        )
 }
 
 #[cfg(test)]
