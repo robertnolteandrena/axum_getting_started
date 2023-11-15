@@ -5,7 +5,7 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befindest du dich im `1-watchserver` Branch. Hier werden wir ein bischen Tooling aufsetzen um den Entwicklungsprozess angenehmer zu machen
+Im Moment befindest du dich im `main` Branch. Dies ist der Anfang unserer Hands On Übung.
 
 ## Was ist hier?
 
