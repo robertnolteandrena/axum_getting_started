@@ -131,5 +131,5 @@ Das wäre es für dieses Kapitel auf, zum nächsten:
 ```bash
 git add .
 git commit -m "Adding Tests"
-git checkout 1-fast-feedback
+git checkout 1-timeout-errorhandling
 ```
