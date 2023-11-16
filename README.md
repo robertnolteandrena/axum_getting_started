@@ -5,7 +5,7 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befindest du dich im `0-get-started` Branch. Dies ist der Anfang unserer Hands On Übung.
+Im Moment befindest du dich im `0-run-app-write-tests` Branch. Dies ist der Anfang unserer Hands On Übung.
 
 ## Was ist hier?
 
