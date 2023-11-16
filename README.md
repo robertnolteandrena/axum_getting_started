@@ -5,7 +5,7 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befindest du dich im `2-middleware-errorhandling` Branch. Wir werden uns nun um timeouts kuemmern.
+Im Moment befindest du dich im `2-json` Branch. Wir werden uns nun um timeouts kuemmern.
 
 ## Was gibts hier zu tun ?
 
