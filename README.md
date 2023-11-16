@@ -32,7 +32,31 @@ Willkommen in deinem eigenen World Wide Web!
 
 ### Warum existiert `lib.rs` ?
 
-Eine gute Frage: Um Integrationstests zu schreiben!
-In Rust koennen wir zwei verschiedene Arten von tests schreiben: Unit Tests und Integration Tests.
-Unit Tests sind Bestandteil unseres Projektes und haben priviligierten Zugang zu unserem Code.
-Integrationstests auf der anderen Hand, sind eigenstaendige executables, die unseren Code lediglich als Crate importieren.
+Eine gute Frage: Um Integrationstests schreiben!
+In Rust können wir zwei verschiedene Arten von Tests schreiben: Unit Tests und Integrationstests.
+Unit Tests sind Teil unseres Projekts und haben privilegierten Zugriff auf unseren Code.
+Integrationstests hingegen sind eigenständige ausführbare Programme, die unseren Code nur als Crate importieren.
+
+Zu diesem Zweck kann in der `lib.rs` eine öffentliche Funktion erstellt werden, die uns unsere Routen zurückgibt.
+Diese Funktion muss dann in `bin.rs` importiert und benutzt werden.
+Als nächstes können wir einen Unit-Test in `lib.rs` schreiben.
+Um ganz sicher zu gehen, können wir noch einen Integrationstest hinzufügen.
+Integrationstests leben normalerweise in einem `/tests` Ordner.
+Wir können also die Datei `/tests/integration_test.rs` erstellen. Dort können wir unseren Unit-Test hineinkopieren und müssen nur die Form etwas ändern.
+
+```rust
+//dependencies #[tokio::test]
+async fn hello_world(){
+//Test Code
+}
+
+```
+
+Mit `cargo test` werden sowohl Unit- als auch Integrationstests durchgeführt .
+Das waere es fuer dieses Kapitel auf zum naechsten:
+
+```bash
+git add .
+git commit -m "Adding Tests"
+git checkout 1-fast-feedback
+```
