@@ -2,7 +2,7 @@ use axum::{
     body::Body,
     http::{Request, StatusCode},
 };
-use hands_on_lib::construct_app;
+use hands_on_lib::{construct_app, TIMER_URI};
 use tower::util::ServiceExt;
 
 #[tokio::test]
@@ -11,7 +11,7 @@ async fn timeout() {
     let app = construct_app();
 
     let request = Request::builder()
-        .uri("/10_seconds_timer")
+        .uri(TIMER_URI)
         .body(Body::empty())
         .unwrap();
     //act
