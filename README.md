@@ -32,24 +32,97 @@ Willkommen in deinem eigenen World Wide Web!
 
 ### Warum existiert `lib.rs` ?
 
-Eine gute Frage: Um Integrationstests schreiben!
-In Rust können wir zwei verschiedene Arten von Tests schreiben: Unit Tests und Integrationstests.
-Unit Tests sind Teil unseres Projekts und haben privilegierten Zugriff auf unseren Code.
-Integrationstests hingegen sind eigenständige ausführbare Programme, die unseren Code nur als Crate importieren.
+Eine gute Frage: Um Integrationstests zu schreiben!
+In Rust können wir zwei verschiedene Arten von Tests schreiben:
+
+- Unit Tests
+- Integrationstests.
+
+Unit Tests sind Teil unseres Projekts und haben **privilegierten** Zugriff auf unseren Code.
+Integrationstests hingegen sind **eigenständige** ausführbare Programme, die unseren Code nur als Crate importieren.
 
 Zu diesem Zweck kann in der `lib.rs` eine öffentliche Funktion erstellt werden, die uns unsere Routen zurückgibt.
 Diese Funktion muss dann in `bin.rs` importiert und benutzt werden.
-Als nächstes können wir einen Unit-Test in `lib.rs` schreiben.
-Um ganz sicher zu gehen, können wir noch einen Integrationstest hinzufügen.
-Integrationstests leben normalerweise in einem `/tests` Ordner.
-Wir können also die Datei `/tests/integration_test.rs` erstellen. Dort können wir unseren Unit-Test hineinkopieren und müssen nur die Form etwas ändern.
+Diese funktion können wir dann auch in Integrationstests importieren und damit unser Programm testen, ohne einen richtigen Server zu starten.
+Als nächstes können wir einen Unit-Test in `lib.rs` schreiben und einen Integrationstest in `tests/hello_world.rs`.
+
+#### Unit test
+
+Unit Tests werden am Ende der Datei hinzugefuegt (`lib.rs`).
+Normalerweise kommen sie in ein Modul mit dem namen "tests", welches nur kompiliert wird, falls ein Test-Build ausgeführt wird:
 
 ```rust
-//dependencies #[tokio::test]
-async fn hello_world(){
-//Test Code
-}
+//productive code
 
+#[cfg(test)]
+mod tests{
+    //dependencies
+
+    #[tokio::test]
+    async fn hello_world(){
+        //Arrange
+        //Act
+        //Assert
+    }
+}
+```
+
+Die dependencies werden hoffentlich von unserer IDE aufgelöst und wir können uns direkt dem Dreigestirn aus Arrange, Act und Assert zuwenden.
+
+##### Arrange
+
+Hier müssen wir irgendwie auf unsere Webapp zugreifen. Dafür haben wir die funktion `fn construct_app`:
+
+```rust
+let app=construct_app();
+```
+
+##### Act
+
+Nun schicken wir einen request an unsere App. Den Request können wir mit einem Builder ähnlichen Interface konstruieren:
+
+```rust
+let request=Request::builder()
+                    .uri("/")
+                    .body(Body::empty())
+                    .unwrap();
+```
+
+Diesen request werfen wir nun unserer App zu, welche uns eine Response geben wird:
+
+```rust
+let response=app.oneshot(request).await.unwrap();
+```
+
+Zuletzt extrahieren wir den response body und den Status Code:
+
+```rust
+let status_code=response.status();
+let body=hyper::body::to_bytes(response.into_body()).await.unwrap();
+```
+
+##### Assert
+
+Hier erwarten wir den Status Code `OK` und den Response Body "Hello World".
+
+```rust
+assert_eq!(status_code,StatusCode::OK);
+assert_eq!(&body[..],b"Hello, World!");
+```
+
+#### Integration test
+
+Der Integrationstest wird nicht in ein eigenes Modul geschrieben. Er wird sowieso zu einer eigenständigen Binary.
+
+```rust
+//dependencies
+
+#[tokio::test]
+async fn hello_world(){
+    //Arrange
+    //Act
+    //Assert
+}
 ```
 
 Mit `cargo test` werden sowohl Unit- als auch Integrationstests durchgeführt .
