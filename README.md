@@ -9,32 +9,23 @@ Im Moment befindest du dich im `1-fast-feedback` Branch. Hier werden wir ein bis
 
 ## Was gibts hier zu tun ?
 
-Es gab einen Zusatz im code:
+### Fast Feedback
 
-```rust
-#[cfg(test)]
-mod tests{
-    // Some Dependencies
-    #[tokio::test]
-    async fn hello_world(){
-        // Setup
-        // Run
-        // Assert
-    }
-}
-```
-
-Wir haben Tests (yay 😊).
-Diese tests koennen wir einmalig ausfueren mit:
-
-```bash
-cargo test
-```
-
-oder besser noch: ausfueren nach jeder Aenderung:
+Wir haben nun einen Unit test und einen Integrationstest, welche wir im vorherigen Abschnitt mit `cargo test` ausgefuehrt haben.
+Um die tests immer auszufuehren sobald etwas geandert wurde, konnen wir `cargo-watch` benutzen:
 
 ```bash
 cargo install cargo-watch
 cargo watch -q -c -x  "test -- --show-output"
 ```
 
+Wir koennen cargo auch sagen dass der Command nur ausgefuehrt werden soll, wenn sich dateien in einem bestimmten Ordner aendern:
+
+```bash
+cargo install cargo-watch
+cargo watch -q -w tests -c -x  "test -- --show-output"
+```
+
+Nachdem wir das einmal durchexerziert haben, muss ich zugeben dass der Unit Test gerade unnoetig ist und geloescht werden kann. Der Integrationstest reicht fuers erste.
+
+### Middleware Errorhandling
