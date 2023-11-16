@@ -36,20 +36,20 @@ Eine gute Frage: Um Integrationstests zu schreiben!
 In Rust können wir zwei verschiedene Arten von Tests schreiben:
 
 - Unit Tests
-- Integrationstests.
+- Integrationstests
 
 Unit Tests sind Teil unseres Projekts und haben **privilegierten** Zugriff auf unseren Code.
 Integrationstests hingegen sind **eigenständige** ausführbare Programme, die unseren Code nur als Crate importieren.
 
 Zu diesem Zweck kann in der `lib.rs` eine öffentliche Funktion erstellt werden, die uns unsere Routen zurückgibt.
 Diese Funktion muss dann in `bin.rs` importiert und benutzt werden.
-Diese funktion können wir dann auch in Integrationstests importieren und damit unser Programm testen, ohne einen richtigen Server zu starten.
+Diese Funktion können wir dann auch in Integrationstests importieren und mit ihr unser Programm testen, ohne einen richtigen Server zu starten.
 Als nächstes können wir einen Unit-Test in `lib.rs` schreiben und einen Integrationstest in `tests/hello_world.rs`.
 
 #### Unit test
 
-Unit Tests werden am Ende der Datei hinzugefuegt (`lib.rs`).
-Normalerweise kommen sie in ein Modul mit dem namen "tests", welches nur kompiliert wird, falls ein Test-Build ausgeführt wird:
+Unit Tests werden am Ende der Datei hinzugefügt (`lib.rs`).
+Normalerweise kommen sie in ein Modul mit dem Namen "tests", welches nur kompiliert wird, falls ein Test-Build ausgeführt wird:
 
 ```rust
 //productive code
@@ -67,18 +67,18 @@ mod tests{
 }
 ```
 
-Wir werden noch ein weiteres Crate brauchen um unseren Test zu schreiben.
-Da wir dieses allerdings nur für die Tests brauchen, können wir uns darauf beschränken es als dev-dependency hinzuzufügen:
+Wir werden noch zwei weitere Crates brauchen um unseren Test zu schreiben.
+Da wir diese allerdings nur für die Tests brauchen, können wir uns darauf beschränken sie als dev-dependency hinzuzufügen:
 
 ```bash
-cargo add --dev tower
+cargo add --dev tower hyper
 ```
 
 Die dependencies werden hoffentlich von unserer IDE aufgelöst und wir können uns direkt dem Dreigestirn aus Arrange, Act und Assert zuwenden.
 
 ##### Arrange
 
-Hier müssen wir irgendwie auf unsere Webapp zugreifen. Dafür haben wir die funktion `fn construct_app`:
+Hier müssen wir auf unsere Webapp zugreifen. Dafür haben wir die Funktion `fn construct_app`:
 
 ```rust
 let app=construct_app();
@@ -86,7 +86,7 @@ let app=construct_app();
 
 ##### Act
 
-Nun schicken wir einen request an unsere App. Den Request können wir mit einem Builder ähnlichen Interface konstruieren:
+Nun schicken wir einen Request an unsere App. Den Request können wir mit einem Builder-ähnlichen Interface konstruieren:
 
 ```rust
 let request=Request::builder()
@@ -95,7 +95,7 @@ let request=Request::builder()
                     .unwrap();
 ```
 
-Diesen request werfen wir nun unserer App zu, welche uns eine Response geben wird:
+Diesen Request werfen wir nun unserer App zu, welche uns eine Response geben wird:
 
 ```rust
 let response=app.oneshot(request).await.unwrap();
@@ -103,7 +103,7 @@ let response=app.oneshot(request).await.unwrap();
 
 ##### Assert
 
-Wir extrahieren den response body und den Status Code:
+Wir extrahieren den Response Body und den Status Code:
 
 ```rust
 let status_code=response.status();
@@ -119,7 +119,7 @@ assert_eq!(&body[..],b"Hello, World!");
 
 #### Integration test
 
-Der Integrationstest wird nicht in ein eigenes Modul geschrieben. Er wird sowieso zu einer eigenständigen Binary.
+Der Integrationstest muss nicht in ein eigenes Modul geschrieben, denn er wird sowieso zu einer eigenständigen Binary.
 
 ```rust
 //dependencies
@@ -132,8 +132,8 @@ async fn hello_world(){
 }
 ```
 
-Mit `cargo test` werden sowohl Unit- als auch Integrationstests durchgeführt .
-Das wäre es für dieses Kapitel auf, zum nächsten:
+Mit `cargo test` werden sowohl Unit- als auch Integrationstests durchgeführt.
+Das wäre es für dieses Kapitel, auf zum nächsten:
 
 ```bash
 git add .
