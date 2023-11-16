@@ -67,6 +67,13 @@ mod tests{
 }
 ```
 
+Wir werden noch ein weiteres Crate brauchen um unseren Test zu schreiben.
+Da wir dieses allerdings nur für die Tests brauchen, können wir uns darauf beschränken es als dev-dependency hinzuzufügen:
+
+```bash
+cargo add --dev tower
+```
+
 Die dependencies werden hoffentlich von unserer IDE aufgelöst und wir können uns direkt dem Dreigestirn aus Arrange, Act und Assert zuwenden.
 
 ##### Arrange
