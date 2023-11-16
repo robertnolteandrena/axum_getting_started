@@ -16,16 +16,18 @@ mod tests {
 
     #[tokio::test]
     async fn hello_world() {
+        // arrange
         let app = construct_app();
+        let request = Request::builder().uri("/").body(Body::empty()).unwrap();
 
-        let response = app
-            .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
-            .await
-            .unwrap();
+        // act
+        let response = app.oneshot(request).await.unwrap();
 
-        assert_eq!(response.status(), StatusCode::OK);
-
+        // assert
+        let status_code = response.status();
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+
+        assert_eq!(status_code, StatusCode::OK);
         assert_eq!(&body[..], b"Hello, World!");
     }
 }
