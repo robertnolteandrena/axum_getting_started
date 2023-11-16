@@ -5,7 +5,7 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment bist du im `1-fast-feedback` Branch. Hier werden wir ein wenig Tooling aufsetzen, um den Entwicklungsprozess angenehmer zu gestalten.
+Im Moment bist du im `1-timeout-errorhandling` Branch. Hier werden wir ein wenig Tooling aufsetzen, um den Entwicklungsprozess angenehmer zu gestalten.
 Danach implementieren wir einen Server seitigen Timeout.
 
 ## Was gibt es hier zu tun?
