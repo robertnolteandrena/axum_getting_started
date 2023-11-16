@@ -94,16 +94,16 @@ Diesen request werfen wir nun unserer App zu, welche uns eine Response geben wir
 let response=app.oneshot(request).await.unwrap();
 ```
 
-Zuletzt extrahieren wir den response body und den Status Code:
+##### Assert
+
+Wir extrahieren den response body und den Status Code:
 
 ```rust
 let status_code=response.status();
 let body=hyper::body::to_bytes(response.into_body()).await.unwrap();
 ```
 
-##### Assert
-
-Hier erwarten wir den Status Code `OK` und den Response Body "Hello World".
+und erwarten den Status Code `OK` sowie den Response Body "Hello World".
 
 ```rust
 assert_eq!(status_code,StatusCode::OK);
