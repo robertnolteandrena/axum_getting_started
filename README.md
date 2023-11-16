@@ -42,20 +42,108 @@ cargo add tower -F timeout
 
 #### Timeout Integrationstest
 
-Bevor wir unseren produktiven Code anpassen, können wir ein Akzeptanzkriterium als Integrationstest ausdrucken. Wenn wir eine Anfrage an die URI: '/10_seconds_timer' senden, erwarten wir als Antwortstatus 'Internal Server Error'.
-Diesen Integrationstest können wir z.B. in eine neue Datei `tests/timeout_error.rs` schreiben. In unserer `cargo watch` Konsole sollten wir nun einen fehlgeschlagenen Test sehen. Um den neuen Test einmalig auszuführen, kann auch `cargo test timeout_error` verwendet werden.
+Bevor wir unseren produktiven Code anpassen, können wir das Akzeptanzkriterium als Integrationstest (`tests/timeout_error.rs`) ausdrücken.
+Wenn wir eine Anfrage an die URI: '/10_seconds_timer' senden, erwarten wir als Antwortstatus 'Internal Server Error'.
+In `lib.rs` können wir eine Konstante hinzufuegen, die wir dann auch in den Tests verwenden werden.
+
+```rust
+pub const TIMER_URI:&str ="/10_seconds_timer";
+```
+
+Damit wird unser 'Arrange' Part zu:
+
+```rust
+let app = construct_app();
+let request=Request::builder()
+                    .uri(TIMER_URI)
+                    .body(Body::empty())
+                    .unwrap()
+```
+
+Der 'Act' Block bleibt so wie im vorherigen Test (`tests/hello_world.rs`).
+Im 'Assert' Block überpruefen wir, ob der Server auch wirklich einen Internal Server Status zurückgibt:
+
+```rust
+assert_eq!(response.status(),StatusCode::INERNAL_SERVER_ERROR)
+```
+
+Dieser Test kann mit `cargo test timeout_error` ausgeführt werden, und sollte fehlschlagen: Wir sollten einen `404` bekommen.
+Im nächsten Schritt passen wir den Produktivcode an, um unseren Test grün zu bekommen.
 
 #### Timeout Produktivcode
 
-Zuerst brauchen wir eine neue Route: '/10_seconds_timer'.
-Diese soll 10 Sekunden pausieren und dann etwas zurückgeben. Wenn wir nun unseren Test ausführen: `cargo test timeout_error`, sollte dieser noch fehlschlagen. Im naechsten Schritt aendern wir unseren Code so, dass wir nach einer Sekunde einen timeout_error zurueckgeben. Dazu registrieren wir einen Layer in der Funktion `fn construct_app`.
-Layer ermöglichen es, zusätzliche Logik für Routen zu definieren. Wir können einen neuen Layer mit dem `ServiceBuilder` erstellen. Dieser gibt uns eine Schnittstelle ähnlich dem Builder Pattern.
-Das gewünschte Verhalten dieses Layers ist die Rückgabe eines `Internal Server Errors` nach einer Sekunde.
+##### User Story Teil 1
 
-Zum nächsten Kapitel geht es hier entlang:
+> Als API Konsument möchte ich einen Endpunkt, der mich 10 Sekunden warten lässt.
+
+```rust
+pub fn construct_app() -> Router {
+    Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+        .route(
+            TIMER_URI,
+            get(|| async {
+                tokio::time::sleep(Duration::from_secs(10)).await;
+                "10 seconds have passed: you may continue with other task now"
+            }),
+        )
+}
+```
+
+Der erste Teil der User Story ist nun abgeschlossen, aber unser Akzeptanztest läuft noch nicht durch, denn
+der Request hat keinen Timeout ausgelöst.
+
+##### User Story Teil 2
+
+> Als Person die die Server Rechnung bezahlt, möchte ich ein Sicherheitsnetz haben.
+> Requests müssen innerhalb von einer Sekunde abgeschlossen sein. Falls das nicht der Fall ist muss der Request 'abgelehnt' werden.
+
+Dazu registrieren wir einen Layer in der Funktion `fn construct_app`.
+
+> Layer ermöglichen es, zusätzliche Logik für Routen zu definieren.
+
+Wir können einen neuen Layer mit dem ServiceBuilder erstellen.
+Dieser gibt uns eine Schnittstelle ähnlich dem Builder Pattern.
+
+```rust
+pub fn construct_app() -> Router {
+    Router::new()
+        .route("/", get(|| async { "Hello, World!" }))
+        .route(
+            TIMER_URI,
+            get(|| async {
+                tokio::time::sleep(Duration::from_secs(10)).await;
+                "10 seconds have passed: you may continue with other task now"
+            }),
+        )
+        .layer(
+            ServiceBuilder::new()
+                .layer(HandleErrorLayer::new(handle_timeout_error))
+                .timeout(Duration::from_secs(1)),
+        )
+}
+```
+
+Unsere IDE sollte uns einen Fehler anzeigen, denn wir haben noch nicht `handle_timeout_error` definiert.
+Dies ist eine Funktion, die im Falle der Timeout Überschreitung den INTERNAL SERVER ERROR zurückgeben soll:
+
+```rust
+pub async fn handle_timeout_error(err: BoxError) -> (StatusCode, &'static str) {
+    if err.is::<tower::timeout::error::Elapsed>() {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Handler has taken too long",
+        )
+    } else {
+        (StatusCode::OK, "")
+    }
+}
+```
+
+Damit sollte der Integrationstest grün werden und wir können uns im nächsten Abschnitt mit JSON beschäftigen:
 
 ```bash
 git add .
-git commit -m "Timeout Error Handling"
-git checkout 2-middleware-errorhandling
+git commit -m "Timeout Error"
+git checkout 2-json
 ```
