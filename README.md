@@ -11,11 +11,12 @@ Im Moment befindest du dich im `0-get-started` Branch. Dies ist der Anfang unser
 
 Neben der Datei README.md gibt es ein Verzeichnis `src` und eine Datei `Cargo.toml`.
 In der `Cargo.toml` findest du unter `[dependencies]` die Abhängigkeiten dieses Projektes: `axum` und `tokio`.
-Eine einzige Datei: `main.rs` befindet sich im `src` Ordner. In dieser befindet sich der Code für einen lokalen Webserver auf Port 3000. Dieser Webserver hat momentan nur eine Route.
+Zwei Dateien: `bin.rs`, `lib.rs` befinden sich im `src` Ordner. `lib.rs` ist noch leer und in `bin.rs` befindet sich der Code für einen lokalen Webserver auf Port 3000. Dieser Webserver hat momentan nur eine Route.
 
 ## Was nun?
 
-Das ist alles schön und gut, aber Quellcode macht noch keinen Webserver.
+### Rust Installation
+
 Auf der [Installationsseite](https://www.rust-lang.org/tools/install) findest du die empfohlene Methode, Rust für dein Betriebssystem zu installieren.
 Wenn du **Linux** benutzt, kannst du `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh` verwenden.
 Danach solltest du über die notwendigen Werkzeuge verfügen, um den Quellcode in ein ausführbares Programm umzuwandeln.
@@ -28,3 +29,10 @@ Hello, World!
 ```
 
 Willkommen in deinem eigenen World Wide Web!
+
+### Warum existiert `lib.rs` ?
+
+Eine gute Frage: Um Integrationstests zu schreiben!
+In Rust koennen wir zwei verschiedene Arten von tests schreiben: Unit Tests und Integration Tests.
+Unit Tests sind Bestandteil unseres Projektes und haben priviligierten Zugang zu unserem Code.
+Integrationstests auf der anderen Hand, sind eigenstaendige executables, die unseren Code lediglich als Crate importieren.
