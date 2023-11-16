@@ -53,7 +53,7 @@ async fn hello_world(){
 ```
 
 Mit `cargo test` werden sowohl Unit- als auch Integrationstests durchgeführt .
-Das waere es fuer dieses Kapitel auf zum naechsten:
+Das wäre es für dieses Kapitel auf, zum nächsten:
 
 ```bash
 git add .
