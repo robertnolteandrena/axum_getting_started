@@ -2,7 +2,7 @@ pub mod controllers;
 pub mod dto;
 use std::time::Duration;
 
-use axum::{error_handling::HandleErrorLayer, routing::get, BoxError, Router};
+use axum::{error_handling::HandleErrorLayer, BoxError, Router};
 use controllers::temperature::get_temperature_routes;
 use hyper::StatusCode;
 use tower::ServiceBuilder;
@@ -11,14 +11,6 @@ pub const TIMER_URI: &str = "/10_seconds_timer";
 
 pub fn construct_app() -> Router {
     Router::new()
-        .route("/", get(|| async { "Hello, World!" }))
-        .route(
-            TIMER_URI,
-            get(|| async {
-                tokio::time::sleep(Duration::from_secs(10)).await;
-                "10 seconds have passed: you may continue with other task now"
-            }),
-        )
         .nest("/temperature", get_temperature_routes())
         .layer(
             ServiceBuilder::new()
