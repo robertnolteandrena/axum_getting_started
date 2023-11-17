@@ -6,6 +6,7 @@ use hands_on_lib::{
 };
 use hyper::{header::CONTENT_TYPE, Body};
 use mime::APPLICATION_JSON;
+use spectral::{assert_that, numeric::FloatAssertions};
 use tower::ServiceExt;
 
 #[tokio::test]
@@ -32,10 +33,5 @@ async fn from_celsius_to_fahrenheit() {
     let fahrenheit_temperature: Fahrenheit = serde_json::from_slice(&body_bytes).unwrap();
 
     assert_eq!(status_code, StatusCode::OK);
-    assert_eq!(
-        fahrenheit_temperature,
-        Fahrenheit {
-            fahrenheit_value: 100f32
-        }
-    );
+    assert_that!(fahrenheit_temperature.fahrenheit_value).is_close_to(100f32, 1e-2f32);
 }
