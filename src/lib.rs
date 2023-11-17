@@ -1,3 +1,4 @@
+pub mod controllers;
 pub mod dto;
 use std::time::Duration;
 
