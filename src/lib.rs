@@ -3,6 +3,7 @@ pub mod dto;
 use std::time::Duration;
 
 use axum::{error_handling::HandleErrorLayer, routing::get, BoxError, Router};
+use controllers::temperature::get_temperature_routes;
 use hyper::StatusCode;
 use tower::ServiceBuilder;
 
@@ -18,6 +19,7 @@ pub fn construct_app() -> Router {
                 "10 seconds have passed: you may continue with other task now"
             }),
         )
+        .nest("/temperature", get_temperature_routes())
         .layer(
             ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(handle_timeout_error))
