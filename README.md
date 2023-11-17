@@ -117,7 +117,7 @@ Langsam aber sicher wird unsere Webapp komplexer und deine Implementierung wird 
 Du kannst nun entscheiden, ob du mit deiner Implementation weitermachen möchtest und einfach die nächste README auscheckst:
 
 ```bash
-git checkout 4 -- README.md
+git checkout 3-passing-state -- README.md
 ```
 
 oder mit unserer Implementation:
@@ -125,5 +125,5 @@ oder mit unserer Implementation:
 ```bash
 git add .
 git commit -m "Add Temperature Routes"
-git checkout 4
+git checkout 3-passing-state
 ```
