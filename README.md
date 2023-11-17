@@ -5,35 +5,36 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befindest du dich im `2-json` Branch. Wir werden uns nun um timeouts kuemmern.
+Im Moment bist du im `2-json` Branch. Hier werden wir eine Route hinzufügen, die sowohl JSON konsumiert als auch zurückgibt.
 
-## Was gibts hier zu tun ?
+## Was ist hier zu tun?
 
-Fangen damit an alle dependencies zu installieren die wir fuer diesen Abschnitt brauchen:
+Installiere zunächst alle Abhängigkeiten, die wir für diesen Abschnitt benötigen:
 
-- Produktivcode
-  - Das `json` feature von `axum`
-    - `cargo add axum -F json`
-    - Deserialisation von Request Bodies, die `serde::Deserialize` implementieren
-    - Serialisation von Responses, die `serde::Serialize` implementieren
-  - `serde` mit feature `serde_derive`
+- Produktiv-Code
+- Das `json` Feature von `axum
+  - `cargo add axum -F json`
+  - Deserialisierung von Request-Bodies, die `serde::Deserialize` implementieren
+  - Serialisierung von Responses, die `serde::Serialize` implementieren
+  - `serde` mit Feature `derive`
     - `cargo add serde -F derive`
-    - Framework fuer Serialisation und Deserialisation
-    - Makros durch `derive` feature
-- Test Code
-  - `mime` crate
+    - Framework für Serialisierung und Deserialisierung
+  - Makros werden durch `derive` bereitgestellt
+- Test-Code
+  - mime` Crate
     - `cargo add mime`
     - MIME als Typen
-  - `serde_json`
+  - serde_json
     - `cargo add --dev serde_json`
-    - JSON support fuer `serde`
+    - JSON-Unterstützung für `serde`
   - `spectral`
     - `cargo add --dev spectral`
-    - Mehr assertions
+    - Mehr Assertions
 
 ### Akzeptanzkriterium
 
-In diesem Abschnitt wollen wir eine Route hinzufuegen, die eine Temperatur in Celsius zu Fahrenheit umrechnet. Wir benoetigen ein `Celsius` und ein `Fahrenheit` struct, wobei das `Fahrenheit` struct das `From<Celsius>` trait implementiert.
+In diesem Abschnitt wollen wir eine Route hinzufügen, die eine Temperatur von Celsius nach Fahrenheit konvertiert.
+Wir brauchen ein `Celsius` und ein `Fahrenheit` struct, wobei das `Fahrenheit` struct das `From<Celsius>` trait implementiert.
 
 ```rust
 //dependencies
@@ -49,8 +50,8 @@ impl From<Celsius> for Fahrenheit {
 }
 ```
 
-Sobald das `Celsius` struct analog kreirt ist koennen wir einen Integrationstest schreiben, ohne dass die IDE uns alles rot einfaerbt.
-Um ein struct, dass `serde::Serialize` implementiert in JSON zu ueberfuehren, benutzen wir `serde:json::to_value`
+Sobald das `Celsius` struct analog erstellt ist, können wir einen Integrationstest schreiben, ohne dass die IDE uns alles rot einfärbt.
+Um ein struct, das `serde::Serialize` implementiert, in JSON zu überführen, benutzen wir `serde:json::to_value`.
 
 ```rust
 let celsius_temperature = Celsius {
@@ -60,7 +61,7 @@ let json_value = serde_json::to_value(celsius_temperature).unwrap();
 let request_body = Body::from(json_value.to_string());
 ```
 
-Mit dem `request_body` koennen wir dann unseren Request bauen:
+Mit dem `request_body` können wir dann unsere Anfrage aufbauen:
 
 ```rust
 let request = Request::builder()
@@ -77,7 +78,7 @@ let body_bytes = hyper::body::to_bytes(response.into_body()).await.unwrap();
 let fahrenheit_temperature: Fahrenheit = serde_json::from_slice(&body_bytes).unwrap();
 ```
 
-Dann muessen wir nur noch den Assert block schreiben und unser Integrationstest steht:
+Jetzt müssen wir nur noch den Assert-Block schreiben und unser Integrationstest ist fertig:
 
 ```rust
 //Assert Status Code is Ok
@@ -86,9 +87,9 @@ assert_that!(fahrenheit_temperature.fahrenheit_value).is_close_to(98.2, 1e-1f32)
 
 ### Produktivcode
 
-Das einzige was uebrig bleibt ist schreiben der route.
-Der Endpunkt soll unter "/temperature/fahrenheit" leben.
-Um diese neue Route zu separieren, koennen wir eine Function schreiben, die uns einen Router fuer die uebergeordnete "/temperature" uri gibt.
+Jetzt muss nur noch die Route geschrieben werden.
+Der Endpunkt soll unter "/temperature" liegen.
+Um diese neue Route zu trennen, können wir eine Funktion schreiben, die uns einen Router für die übergeordnete "/temperature"-URI gibt.
 
 ```rust
 pub fn get_temperature_routes() -> Router {
@@ -102,19 +103,18 @@ pub fn get_temperature_routes() -> Router {
 }
 ```
 
-Dieser Router wird dann mit Funktion `nest` eingebunden:
+Dieser Router wird dann mit der Funktion `nest` eingebunden:
 
 ```rust
 .nest("/temperature", get_temperature_routes())
 ```
 
-Damit sollte der Integrationstest gruen werden.
+Damit sollte dew Integrationstest erfolgreich durchlaufen.
 
 ## Wie gehts weiter ?
 
-Langsam aber sicher wird unsere Webapp komplexer
-und deine Implementation wird mit Sicherheit im detail anders aussehen als unsere.
-Du kannst dich nun entscheiden, ob du mit deiner Implementation weitermachst und lediglich die naechste README auscheckst:
+Langsam aber sicher wird unsere Webapp komplexer und deine Implementierung wird im Detail sicher anders aussehen als unsere.
+Du kannst nun entscheiden, ob du mit deiner Implementation weitermachen möchtest und einfach die nächste README auscheckst:
 
 ```bash
 git checkout 4 -- README.md
