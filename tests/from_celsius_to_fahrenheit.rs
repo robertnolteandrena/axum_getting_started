@@ -13,7 +13,7 @@ use tower::ServiceExt;
 async fn from_celsius_to_fahrenheit() {
     // arrange
     let celsius_temperature = Celsius {
-        celsius_value: 37.7778f32,
+        celsius_value: 36.8,
     };
     let app = construct_app();
     let json_value = serde_json::to_value(celsius_temperature).unwrap();
@@ -33,5 +33,5 @@ async fn from_celsius_to_fahrenheit() {
     let fahrenheit_temperature: Fahrenheit = serde_json::from_slice(&body_bytes).unwrap();
 
     assert_eq!(status_code, StatusCode::OK);
-    assert_that!(fahrenheit_temperature.fahrenheit_value).is_close_to(100f32, 1e-2f32);
+    assert_that!(fahrenheit_temperature.fahrenheit_value).is_close_to(98.2, 1e-1f32);
 }
