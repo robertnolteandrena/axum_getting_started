@@ -31,7 +31,7 @@ Der Integrationstest reicht für den Anfang.
 
 ### Middleware Fehlerbehandlung
 
-Axum hat keine eigene Middleware, sondern verwendet [tower](https://docs.rs/tower/latest/tower/).
+Axum hat keine eigene Middleware, sondern verwendet [tower](https://crates.io/crates/tower).
 Tower ist eine Bibliothek zum Erstellen von Netzwerk-Clients und -Servern.
 Wir können uns nun in Tower einhängen, um eine Timeout Error Response zurückzugeben, falls unser "blazingly fast" Server doch mal länger braucht, um eine Anfrage zu bearbeiten.
 Im Moment verwenden wir tower nur als dev-dependency, jetzt brauchen wir tower in unserem produktiven Code mit dem 'timeout' Feature:
