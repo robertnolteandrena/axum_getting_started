@@ -4,8 +4,6 @@ use axum::{error_handling::HandleErrorLayer, BoxError, Router};
 use hyper::StatusCode;
 use tower::ServiceBuilder;
 
-use super::MyLayer;
-
 pub fn add_timeout_handler(router: Router, duration: Duration) -> Router {
     router.layer(
         ServiceBuilder::new()
