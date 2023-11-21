@@ -1,6 +1,5 @@
 use std::convert::Infallible;
 
-
 use spectral::assert_that;
 use tower::{ServiceBuilder, ServiceExt};
 
