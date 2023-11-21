@@ -1,5 +1,5 @@
 use std::convert::Infallible;
-use std::ops::Deref;
+
 use std::time::Duration;
 
 use tower::{BoxError, ServiceBuilder, ServiceExt};
@@ -45,7 +45,7 @@ async fn test_middleware_with_one_service_and_mapresponse() {
     assert_eq!(15, response)
 }
 
-async fn make_timeout_service(request: usize) -> Result<i32, Infallible> {
+async fn make_timeout_service(_request: usize) -> Result<i32, Infallible> {
     tokio::time::sleep(Duration::from_secs(1)).await;
     Ok(2)
 }
