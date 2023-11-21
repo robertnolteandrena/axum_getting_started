@@ -1,2 +1,2 @@
 pub mod header_controller;
-pub mod temperature;
+pub mod temperature_controller;
