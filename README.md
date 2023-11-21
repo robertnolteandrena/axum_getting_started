@@ -70,6 +70,7 @@ async fn handler(Extension(UserAgentValue(user_agent)): Extension<UserAgentValue
 ```
 
 Danach muss der Router aus `get_header_routes` in `lib.rs` eingebunden werden und unser Test sollte laufen.
+Übrigens: Möglicherweise müssen nun vorherige Tests angepasst werden.
 
 Das wäre es für dieses Kapitel, auf zum nächsten:
 
