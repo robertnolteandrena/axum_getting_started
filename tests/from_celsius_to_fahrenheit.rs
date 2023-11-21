@@ -4,7 +4,10 @@ use hands_on_lib::{
     construct_app,
     dto::{celsius::Celsius, fahrenheit::Fahrenheit},
 };
-use hyper::{header::CONTENT_TYPE, Body};
+use hyper::{
+    header::{CONTENT_TYPE, USER_AGENT},
+    Body,
+};
 use mime::APPLICATION_JSON;
 use spectral::{assert_that, numeric::FloatAssertions};
 use tower::ServiceExt;
@@ -21,6 +24,7 @@ async fn from_celsius_to_fahrenheit() {
     let request = Request::builder()
         .uri("/temperature/fahrenheit")
         .header(CONTENT_TYPE, APPLICATION_JSON.as_ref())
+        .header(USER_AGENT, "integration test")
         .body(request_body)
         .unwrap();
 
@@ -29,9 +33,9 @@ async fn from_celsius_to_fahrenheit() {
 
     // assert
     let status_code = response.status();
+    assert_eq!(status_code, StatusCode::OK);
     let body_bytes = hyper::body::to_bytes(response.into_body()).await.unwrap();
     let fahrenheit_temperature: Fahrenheit = serde_json::from_slice(&body_bytes).unwrap();
 
-    assert_eq!(status_code, StatusCode::OK);
     assert_that!(fahrenheit_temperature.fahrenheit_value).is_close_to(98.2, 1e-1f32);
 }
