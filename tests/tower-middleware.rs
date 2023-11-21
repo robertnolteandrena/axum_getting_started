@@ -1,8 +1,8 @@
 use std::convert::Infallible;
-use std::time::Duration;
+
 
 use spectral::assert_that;
-use tower::{BoxError, ServiceBuilder, ServiceExt};
+use tower::{ServiceBuilder, ServiceExt};
 
 async fn my_service(request: String) -> Result<String, Infallible> {
     Ok(format!("my_service({})", request.to_owned()))
