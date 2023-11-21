@@ -4,11 +4,13 @@ use spectral::assert_that;
 use tower::{ServiceBuilder, ServiceExt};
 
 async fn my_service(request: String) -> Result<String, Infallible> {
-    Ok(format!("my_service({})", request.to_owned()))
+    let response = format!("my_service({})", request.to_owned());
+    Ok(response)
 }
 
 #[tokio::test]
-async fn empty_middleware() {
+async fn middleware_with_one_service() {
+    //a service consumes a request and returns a response
     let svc = tower::service_fn(my_service);
     let sb = ServiceBuilder::new().service(svc);
     let response = sb.oneshot("Vanilla request".to_owned()).await.unwrap();
