@@ -1,8 +1,8 @@
 use axum::http::HeaderValue;
 use chrono::{DateTime, Utc};
 use hands_on_lib::construct_app;
-use hyper::{body::HttpBody, header::USER_AGENT, Body, Request, StatusCode};
-use spectral::{assert_that, boolean::BooleanAssertions, option::OptionAssertions};
+use hyper::{header::USER_AGENT, Body, Request, StatusCode};
+use spectral::{assert_that, option::OptionAssertions};
 use tower::ServiceExt;
 
 #[tokio::test]
