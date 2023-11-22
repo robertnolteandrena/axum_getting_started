@@ -10,7 +10,7 @@ use tower::ServiceBuilder;
 pub fn construct_app() -> Router {
     Router::new()
         .nest("/temperature", get_temperature_routes())
-        .layer(
+        .route_layer(
             ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(handle_timeout_error))
                 .timeout(Duration::from_secs(10)),
