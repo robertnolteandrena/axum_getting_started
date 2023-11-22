@@ -16,8 +16,7 @@ async fn from_celsius_to_fahrenheit() {
         celsius_value: 36.8,
     };
     let app = construct_app();
-    let json_value = serde_json::to_value(celsius_temperature).unwrap();
-    let request_body = Body::from(json_value.to_string());
+    let request_body = Body::from(serde_json::to_string(&celsius_temperature).unwrap());
     let request = Request::builder()
         .uri("/temperature/fahrenheit")
         .header(CONTENT_TYPE, APPLICATION_JSON.as_ref())
