@@ -18,7 +18,7 @@ pub fn construct_app() -> Router {
     Router::new()
         .nest("/temperature", get_temperature_routes())
         .nest("/header", get_header_routes())
-        .layer(
+        .route_layer(
             ServiceBuilder::new()
                 .layer(middleware::from_fn(extract_user_agent))
                 .layer(HandleErrorLayer::new(handle_timeout_error))
