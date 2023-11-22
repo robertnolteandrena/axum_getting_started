@@ -39,7 +39,6 @@ async fn middleware_with_one_service_and_mapresponse() {
 
 #[tokio::test]
 async fn middleware_with_different_return_type() {
-
     //a service consumes a request and returns a response
     let svc = tower::service_fn(my_service);
     let sb = ServiceBuilder::new().service(svc);

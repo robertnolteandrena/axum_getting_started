@@ -1,6 +1,6 @@
 pub mod controllers;
 pub mod dto;
-use std::time::{Duration};
+use std::time::Duration;
 
 use axum::{
     error_handling::HandleErrorLayer,
