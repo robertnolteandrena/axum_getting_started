@@ -1,6 +1,6 @@
 pub mod controllers;
 pub mod dto;
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 
 use axum::{
     error_handling::HandleErrorLayer,
@@ -8,6 +8,7 @@ use axum::{
     middleware::{self},
     BoxError, Router,
 };
+use chrono::{DateTime, Utc};
 use controllers::{
     header_controller::get_header_routes, temperature_controller::get_temperature_routes,
 };
@@ -22,10 +23,17 @@ pub fn construct_app() -> Router {
             ServiceBuilder::new()
                 .layer(middleware::from_fn(extract_user_agent))
                 .layer(HandleErrorLayer::new(handle_timeout_error))
-                .map_request(|request: hyper::Request<hyper::Body>| {
-                    let prefixed = format!("prefix {:?}", request.into_body());
-                    hyper::Request::new(prefixed.into())
-                })
+                .map_response(
+                    |mut response: axum::response::Response| -> axum::response::Response {
+                        let datetime: DateTime<Utc> = Utc::now();
+                        let formated_datetime_string = datetime.to_rfc3339();
+                        response.headers_mut().insert(
+                            "response-timestamp",
+                            formated_datetime_string.parse().unwrap(),
+                        );
+                        response
+                    },
+                )
                 .timeout(Duration::from_secs(10)),
         )
 }
