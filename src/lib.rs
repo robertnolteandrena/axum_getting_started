@@ -16,7 +16,7 @@ pub fn construct_app() -> Router {
                 "10 seconds have passed: you may continue with other task now"
             }),
         )
-        .layer(
+        .route_layer(
             ServiceBuilder::new()
                 .layer(HandleErrorLayer::new(handle_timeout_error))
                 .timeout(Duration::from_secs(1)),
