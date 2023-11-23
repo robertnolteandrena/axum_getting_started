@@ -25,8 +25,7 @@ pub fn construct_app() -> Router {
                 .layer(HandleErrorLayer::new(handle_timeout_error))
                 .map_response(
                     |mut response: axum::response::Response| -> axum::response::Response {
-                        let datetime: DateTime<Utc> = Utc::now();
-                        let formated_datetime_string = datetime.to_rfc3339();
+                        let formated_datetime_string = Utc::now().to_rfc3339();
                         response
                             .headers_mut()
                             .insert("response-time", formated_datetime_string.parse().unwrap());
