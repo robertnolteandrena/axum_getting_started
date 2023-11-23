@@ -8,7 +8,7 @@ use axum::{
     middleware::{self},
     BoxError, Router,
 };
-use chrono::{DateTime, Utc};
+use chrono::{Utc};
 use controllers::{
     header_controller::get_header_routes, temperature_controller::get_temperature_routes,
 };
