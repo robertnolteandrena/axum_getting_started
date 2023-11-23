@@ -85,15 +85,92 @@ cd tower
 cargo test --doc --features full
 ```
 
-Jedes Segment mit einem Doc-Test ist potentiell interessant f\uer Benutzer:innen des crates. Wir schauen uns nun aber nur 3 Funktionen an:
-* test tower/src/builder/mod.rs - builder::ServiceBuilder<L>::service_fn (line 502) ... ok
+Jedes Segment mit einem Doc-Test ist potentiell interessant f\uer Benutzer:innen des crates.
+Eine IDE sollte in der Lage sein uns Doc-Tests f\uer eine Funktion anzuzeigen, sodass wir das tower repository wieder verlassen k\oennen und in dieses repository zur\ueckkehren.
+Wir gucken uns jetzt 3 Funktionen von `tower` an. Daf\uer kannst du den folgenden Code in `tests/exploratory_tower_middleware.rs` kopieren:
+```rust
+use std::{convert::Infallible, fmt::Display};
+
+use spectral::assert_that;
+use tower::{ServiceBuilder, ServiceExt};
+
+#[tokio::test]
+async fn middleware_with_one_service() {
+    let sb = ServiceBuilder::new().service_fn(unimplemented!());
+    let response = sb.oneshot("Vanilla request").await.unwrap();
+    assert_that!(response.as_ref()).is_equal_to("my_service(Vanilla request)");
+}
+
+#[tokio::test]
+async fn middleware_with_one_service_and_one_layer() {
+    let sb = ServiceBuilder::new()
+        .map_request(unimplemented!())
+        .service_fn(unimplemented!());
+    let response = sb.oneshot("Vanilla request").await.unwrap();
+    assert_that!(response.as_ref()).is_equal_to("my_service(map_request(Vanilla request))");
+}
+
+#[tokio::test]
+async fn middleware_with_different_return_type() {
+    //a service consumes a request and returns a response
+    let sb = ServiceBuilder::new().service_fn(unimplemented!());
+    let response = sb.oneshot(42).await.unwrap();
+    assert_that!(response.as_ref()).is_equal_to("my_service(42)");
+}
+
+#[tokio::test]
+async fn middleware_with_one_service_and_mapresponse() {
+    let sb = ServiceBuilder::new()
+        .map_response(unimplemented!())
+        .service_fn(unimplemented!());
+    let response = sb.oneshot("Vanilla request").await.unwrap();
+    assert_that!(response.as_ref()).is_equal_to("map_response(my_service(Vanilla request))");
+}
+
+
+```
+Dieser Code wird nicht compilen, aber unsere IDE sollte nun in der lage sein uns doc-tests f\uer `service_fn` und `map_request` anzuzeigen.
+Mit diesen Doc-tests und dem `format!()` macro k\oennen wir die ersten 3 tests implementieren.
+F\uer `map_response` im letzten Test existieren keine Doc-Tests. \Uebrigens: Sowohl `&str` als auch `i32` implementieren das [`std::fmt::Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html) trait.
 
 
 ### Response-Time header
 
-Wir werden nun mit Repr\aesentationen von Zeit arbeiten.
-Daf\uer verwenden wir das `chrono` crate, das nach eigener Beschreibung darauf abzielt alle Funktionalit\aet f\uer Datums und Zeit operationen zu implementieren.
+Jetzt wo unsere explorativen Tests laufen und wir ein wenig vertraut mit der einbindung von middleware sind, benutzen wir `map_respone` um allen unseren responses den header "response-time" hinzuzuf\uegen.
+Um mit Repr\aesentationen von Zeit umzugehen verwenden wir das `chrono` crate.
 
 ```bash
 cargo add chrono
 ````
+
+#### Integrationstest
+
+Zuerst k\oennen wir einen Integrationstest schreiben, der testen soll, ob wir einen "response-time" header auf einer bereits existenten route geliefert bekommen.
+Welche Route wir testen sollte egal sein, denn der header soll f\uer alle Responses hinzugef\uegt werden.
+Um zu \ueberpr\uefen ob der "response-time" header gesetzt ist und in ein DateTime objekt geparsed werden kann, k\oennen wir den folgenden assert block verwenden.
+
+```rust
+    //assert that the response-time header is present
+    let response_time = response.headers().get("respose-time");
+    assert_that!(&response_time).is_some();
+
+    //assert that the response_time header is parseable to datetime
+    assert_that!(response_time
+        .map(HeaderValue::to_str)
+        .and_then(Result::ok)
+        .map(DateTime::parse_from_rfc3339)
+        .and_then(Result::ok)
+        .map(Into::<DateTime<Utc>>::into))
+    .is_some();
+```
+
+Wenn wir diesen test ausformuliert haben, sollte er fehlschlagen, denn wir m\uessen die eigentliche Funktionalit\aet noch implementieren.
+
+#### Implementation
+
+Wir k\oennen einen aufruf zu `map_response` im ServiceBuilder verwenden. Dabei sollte `map_response` eine function \uebergeben bekommen, die von `mut axum::response::Response` auf `axum::response::Response` abbildet. Von dem Response struct k\oennen wir auf die header zugreifen. Die aktuelle Zeit k\oennen wir erhalten mit:
+
+```rust
+
+let formated_datetime_string = Utc::now().to_rfc3339();
+```
