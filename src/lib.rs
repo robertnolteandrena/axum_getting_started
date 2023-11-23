@@ -27,10 +27,9 @@ pub fn construct_app() -> Router {
                     |mut response: axum::response::Response| -> axum::response::Response {
                         let datetime: DateTime<Utc> = Utc::now();
                         let formated_datetime_string = datetime.to_rfc3339();
-                        response.headers_mut().insert(
-                            "response-timestamp",
-                            formated_datetime_string.parse().unwrap(),
-                        );
+                        response
+                            .headers_mut()
+                            .insert("response-time", formated_datetime_string.parse().unwrap());
                         response
                     },
                 )
