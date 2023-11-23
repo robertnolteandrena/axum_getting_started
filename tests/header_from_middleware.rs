@@ -25,7 +25,7 @@ async fn header_from_middleware() {
     //assert that the response-timestamp header is present and parseable to a Utc DateTime
     assert_that!(response
         .headers()
-        .get("response-timestamp")
+        .get("response-time")
         .map(HeaderValue::to_str)
         .and_then(Result::ok)
         .map(DateTime::parse_from_rfc3339)
