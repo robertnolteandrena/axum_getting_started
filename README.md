@@ -11,7 +11,7 @@ Im Moment befindest du dich im `0-run-app-write-tests` Branch. Dies ist der Anfa
 
 Neben der Datei README.md gibt es ein Verzeichnis `src` und eine Datei `Cargo.toml`.
 In der `Cargo.toml` findest du unter `[dependencies]` die Abhängigkeiten dieses Projektes: `axum` und `tokio`.
-Zwei Dateien: `bin.rs`, `lib.rs` befinden sich im `src` Ordner. `lib.rs` ist noch leer und in `bin.rs` befindet sich der Code für einen lokalen Webserver auf Port 3000. Dieser Webserver hat momentan nur eine Route.
+Zwei Dateien: `bin.rs`, `lib.rs` befinden sich im `src` Ordner. `lib.rs` ist noch leer und in `bin.rs` befindet sich der Code um einen Webserver auf Port 3000 zu starten. Dieser Webserver hat momentan nur eine Route: `/`.
 
 ## Was nun?
 
