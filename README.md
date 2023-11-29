@@ -5,15 +5,17 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befinden wir uns im `4-tower-service ` Branch. Hier werden wir uns n\aeher mit `tower` besch\aeftigen.
-Daf\uer brauchen wir im ersten Schritt nicht einmal `axum` und schreiben ein paar explorative Tests.
-Danach werden wir allen responses den `response-timestamp` header hinzuf\uegen.
+Im Moment befinden wir uns im `4-tower-service` Branch. Hier werden wir uns näher mit dem crate `tower` beschäftigen.
+Dazu brauchen wir im ersten Schritt nicht einmal `axum` und schreiben ein paar explorative Tests.
+Danach werden wir den `response-time` Header an alle Responses anhängen.
 
-## Was gibts hier zu tun ?
+## Was ist hier zu tun?
 
 ### Explorative Tests
 
-Viele Funktionen der Rust standardbibliothek haben Doc-Tests. Doc-Tests sind tests die direkt in der Dokumentation eingebettet ist. Hier ist zum Beispiel die Implementation f\uer [`Vec::pop`](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html#1953):
+Viele Funktionen der Rust Standardbibliothek haben Doc-Tests.
+Doc-Tests sind Tests innerhalb von Kommentaren zur Dokumentation, die nach drei Backticks anfangen und nach drei Backticks wieder aufhören.
+Hier ist zum Beispiel die Implementierung für [`Vec::pop`](https://doc.rust-lang.org/src/alloc/vec/mod.rs.html#1953):
 
 ````rust
 
@@ -47,9 +49,9 @@ Viele Funktionen der Rust standardbibliothek haben Doc-Tests. Doc-Tests sind tes
 
 ````
 
-Wir sehen direkt wie eine bestimmte Funktion verwendet werden kann, und wir k\oennen uns recht sicher sein, dass die Code Dokumentation aktuell ist, denn es handelt sich nicht um ein reines Kommentar:
-Wenn wir `cargo test` aufrufen, werden Doc-Tests auch ausgef\uehrt. Doc-Tests helfen also die Dokumentation des Codes verst\aendlich und aktuell zu halten.
-Obwohl standardisierte Funktionen wie `From::from`, `Clone::clone` oder `Default::default` weniger von Doc-Tests profitieren, k\oennen wir einen Doc-Test zur `Fahrenheit::from` methode hinzuf\uegen:
+Wir sehen direkt, wie eine bestimmte Funktion verwendet werden kann, und wir können ziemlich sicher sein, dass die Code-Dokumentation aktuell ist, da es sich nicht um einen einfachen Kommentar handelt:
+Wenn wir `cargo test` aufrufen, werden auch Doc-Tests ausgeführt. Doc-Tests helfen also, die Dokumentation des Codes verständlich und aktuell zu halten.
+Obwohl standardisierte Funktionen wie `From::from`, `Clone::clone` oder `Default::default` weniger von Doc-Tests profitieren, können wir einen Doc-Test zur `Fahrenheit::from` Methode hinzufügen:
 
 ````rust
 impl From<Celsius> for Fahrenheit {
@@ -71,23 +73,23 @@ impl From<Celsius> for Fahrenheit {
 
 ````
 
-Wenn wir nun `cargo test` aufrufen, sollte dieser Test uns unter `Doc-tests hands_on_lib` angezeigt werden.
+Wenn wir nun `cargo test` aufrufen, sollte uns dieser Test unter `Doc-tests hands_on_lib` angezeigt werden.
 
-> Okay, und was sollte dieser Exkurs in Doc-Tests?
+> Okay, und was soll dieser Exkurs in Doc-Tests?
 
-Haben wir es mit einem neuen, unbekannten crate zu tun, ist eine herangehensweise sich hoffentlich existierenden Doc-Tests anzuschauen und diese dann in ein paar explorative Tests zu \uebertragen.
-Daf\uer k\oennen wir einen neuen test anlegen unter `tests/exploratory_tower_middleware.rs`. Dann koennen wir in einem anderen Ordner ausserhalb dieses git repos das tower crate clonen und die doc-tests von tower laufen lassen:
+Wenn wir es mit einem neuen, unbekannten Crate zu tun haben, ist ein Ansatz, sich die hoffentlich vorhandenen Doc-Tests anzuschauen und diese dann in ein paar explorative Tests zu übertragen.
+Dazu können wir einen neuen Test unter `tests/exploratory_tower_middleware.rs` erstellen. Dann können wir in einem anderen Ordner außerhalb dieses Git Repositories das `tower` Crate clonen und die `tower` Doc-Tests ausführen:
 
-````bash
+```bash
 cd somewhere/outside/this/repo
 git clone https://github.com/tower-rs/tower.git
 cd tower
 cargo test --doc --features full
 ```
 
-Jedes Segment mit einem Doc-Test ist potentiell interessant f\uer Benutzer:innen des crates.
-Eine IDE sollte in der Lage sein uns Doc-Tests f\uer eine Funktion anzuzeigen, sodass wir das tower repository wieder verlassen k\oennen und in dieses repository zur\ueckkehren.
-Wir gucken uns jetzt 3 Funktionen von `tower` an. Daf\uer kannst du den folgenden Code in `tests/exploratory_tower_middleware.rs` kopieren:
+Jedes Code-Segment mit einem Doc-Test ist potentiell interessant für externe Benutzer, wir wollen uns aber auf drei Funktionen beschränken.
+Dazu verlassen wir das Repository von `tower`, kehren hierhin zurück und erstellen die Datei `tests/exploratory_tower_middleware.rs` mit folgendem Inhalt:
+
 ```rust
 use std::{convert::Infallible, fmt::Display};
 
@@ -129,25 +131,25 @@ async fn middleware_with_one_service_and_mapresponse() {
 
 
 ```
-Dieser Code wird nicht compilen, aber unsere IDE sollte nun in der lage sein uns doc-tests f\uer `service_fn` und `map_request` anzuzeigen.
-Mit diesen Doc-tests und dem `format!()` macro k\oennen wir die ersten 3 tests implementieren.
-F\uer `map_response` im letzten Test existieren keine Doc-Tests. \Uebrigens: Sowohl `&str` als auch `i32` implementieren das [`std::fmt::Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html) trait.
 
+Dieser Code wird nicht kompilieren, aber unsere IDE sollte nun in der Lage sein, uns Doc-Tests für `service_fn` und `map_request` anzuzeigen.
+Mit diesen Doc-Tests und dem Makro `format!()` können wir die ersten 3 Tests implementieren.
+Für `map_response` im letzten Test gibt es keine Doc-Tests. Übrigens: Sowohl `&str` als auch `i32` implementieren das [`std::fmt::Display`](https://doc.rust-lang.org/std/fmt/trait.Display.html) Trait.
 
 ### Response-Time header
 
-Jetzt wo unsere explorativen Tests laufen und wir ein wenig vertraut mit der einbindung von middleware sind, benutzen wir `map_respone` um allen unseren responses den header "response-time" hinzuzuf\uegen.
-Um mit Repr\aesentationen von Zeit umzugehen verwenden wir das `chrono` crate.
+Jetzt, wo unsere explorativen Tests laufen und wir ein wenig mit der Integration von Middleware vertraut sind, verwenden wir `map_respone`, um allen unseren Responses den Header "response-time" hinzuzufügen.
+Um Zeitdarstellungen zu handhaben, verwenden wir das `chrono` crate.
 
 ```bash
 cargo add chrono
-````
+```
 
 #### Integrationstest
 
-Zuerst k\oennen wir einen Integrationstest schreiben, der testen soll, ob wir einen "response-time" header auf einer bereits existenten route geliefert bekommen.
-Welche Route wir testen sollte egal sein, denn der header soll f\uer alle Responses hinzugef\uegt werden.
-Um zu \ueberpr\uefen ob der "response-time" header gesetzt ist und in ein DateTime objekt geparsed werden kann, k\oennen wir den folgenden assert block verwenden.
+Zuerst können wir einen Integrationstest schreiben, um zu testen, ob wir einen Header "response-time" auf einer bereits existierenden Route erhalten.
+Welche Route wir testen sollte egal sein, da der Header für alle Responses hinzugefügt werden muss.
+Um zu überprüfen, ob der "response-time" Header gesetzt ist und in ein DateTime-Objekt geparst werden kann, können wir den folgenden Assert-Block verwenden.
 
 ```rust
     //assert that the response-time header is present
@@ -164,13 +166,12 @@ Um zu \ueberpr\uefen ob der "response-time" header gesetzt ist und in ein DateTi
     .is_some();
 ```
 
-Wenn wir diesen test ausformuliert haben, sollte er fehlschlagen, denn wir m\uessen die eigentliche Funktionalit\aet noch implementieren.
+Wenn wir diesen Test formuliert haben, sollte er fehlschlagen, da wir die eigentliche Funktionalität noch implementieren müssen.
 
 #### Implementation
 
-Wir k\oennen einen aufruf zu `map_response` im ServiceBuilder verwenden. Dabei sollte `map_response` eine function \uebergeben bekommen, die von `mut axum::response::Response` auf `axum::response::Response` abbildet. Von dem Response struct k\oennen wir auf die header zugreifen. Die aktuelle Zeit k\oennen wir erhalten mit:
+Wir können einen Aufruf von `map_response` im ServiceBuilder verwenden. Dabei sollte `map_response` eine Funktion übergeben werden, die von `mut axum::response::Response` auf `axum::response::Response` mappt. Aus dem Response struct können wir auf den Header zugreifen. Die aktuelle Zeit erhalten wir mit
 
 ```rust
-
 let formated_datetime_string = Utc::now().to_rfc3339();
 ```
