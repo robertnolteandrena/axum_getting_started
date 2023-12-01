@@ -125,5 +125,5 @@ oder mit unserer Implementation:
 ```bash
 git add .
 git commit -m "Add Temperature Routes"
-git checkout 3-passing-state
+git checkout 3-header-middleware
 ```
