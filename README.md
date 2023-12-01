@@ -175,3 +175,11 @@ Wir können einen Aufruf von `map_response` im ServiceBuilder verwenden. Dabei s
 ```rust
 let formated_datetime_string = Utc::now().to_rfc3339();
 ```
+
+Das wäre es für dieses Kapitel, auf zum nächsten:
+
+```bash
+git add .
+git commit -m "Add Time Header"
+git checkout 5-finish
+```
