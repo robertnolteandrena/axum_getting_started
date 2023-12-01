@@ -22,10 +22,13 @@ async fn header_from_middleware() {
     // assert
     let status_code = response.status();
     assert_eq!(status_code, StatusCode::OK);
-    //assert that the response-timestamp header is present and parseable to a Utc DateTime
-    assert_that!(response
-        .headers()
-        .get("response-time")
+
+    //assert that the response-time header is present
+    let response_time = response.headers().get("respose-time");
+    assert_that!(&response_time).is_some();
+
+    //assert that the response_time header is parseable to datetime
+    assert_that!(response_time
         .map(HeaderValue::to_str)
         .and_then(Result::ok)
         .map(DateTime::parse_from_rfc3339)
