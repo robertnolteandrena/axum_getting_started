@@ -5,7 +5,7 @@ Hier findest du alle Zwischenschritte der Hands On Übungen.
 
 ## Wo bin ich?
 
-Im Moment befinden wir uns im `3-passing-state` Branch. Hier werden wir uns in die Middleware einklinken und den User-Agent-Header auslesen.
+Im Moment befinden wir uns im `3-header-middleware` Branch. Hier werden wir uns in die Middleware einklinken und den User-Agent-Header auslesen.
 
 ## Was gibts hier zu tun ?
 
@@ -77,5 +77,5 @@ Das wäre es für dieses Kapitel, auf zum nächsten:
 ```bash
 git add .
 git commit -m "Extracting User Agent in Middleware"
-git checkout 4-no-name
+git checkout 4-tower-service
 ```
