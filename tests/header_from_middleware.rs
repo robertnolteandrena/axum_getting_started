@@ -24,7 +24,7 @@ async fn header_from_middleware() {
     assert_eq!(status_code, StatusCode::OK);
 
     //assert that the response-time header is present
-    let response_time = response.headers().get("respose-time");
+    let response_time = response.headers().get("response-time");
     assert_that!(&response_time).is_some();
 
     //assert that the response_time header is parseable to datetime
